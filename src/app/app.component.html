@@ -1,2 +1,3 @@
 <app-header/>
-<app-user/>
+<app-user (calculator)="onCalculateInvestmentResults($event)"/>
+<app-investment-result [results]="resultsData()"/>

@@ -1,19 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from "./header/header.component";
 import { UserComponent } from "./user/user.component";
+import type { InvestmentInput } from './investment-input.model';
+import { InvestmentResultComponent } from "./investment-result/investment-result.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, UserComponent],
+  imports: [RouterOutlet, HeaderComponent, UserComponent, InvestmentResultComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  calculateInvestmentResults(data: {
-    initialInvestment: number, duration: number, expectedReturn: number, annualInvestment: number
-  }) {
+
+  resultsData = signal<{
+    year: number,
+    interest: number,
+    valueEndOfYear: number,
+    annualInvestment: number,
+    totalInterest: number,
+    totalAmountInvested: number,
+  }[] | undefined>(undefined);
+
+  onCalculateInvestmentResults(data: InvestmentInput) {
     const { initialInvestment, duration, expectedReturn, annualInvestment } = data;
     const annualData = [];
     let investmentValue = initialInvestment;
@@ -33,8 +43,7 @@ export class AppComponent {
         totalAmountInvested: initialInvestment + annualInvestment * year,
       });
     }
-  
-    return annualData;
+    this.resultsData.set(annualData);
   }
   
 }
